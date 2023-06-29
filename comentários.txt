@@ -1,0 +1,2 @@
+Arquivos .jsx: muito semelhantes ao html
+
