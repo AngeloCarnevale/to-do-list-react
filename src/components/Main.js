@@ -18,18 +18,36 @@ class Main extends Component {
     inputSubmit = (event) => {
         event.preventDefault()
         const {tarefas} = this.state
-        let novaTarefa = this.state
+        let {novaTarefa} = this.state
 
-        if (tarefas.indexOf(novaTarefa) !== -1) return;
-        
+        if (tarefas.indexOf(novaTarefa) !== -1){
+            return alert("Item já adicionado")
+        }
+
         const novasTarefas = [...tarefas]
+
         this.setState({
             tarefas: [...novasTarefas, novaTarefa]
         })
     }
+
     inputMudou = (event) => {
         this.setState({
             novaTarefa: event.target.value
+        })
+    }
+
+    editTask = (event, index) => {
+        console.log("edit", index)
+    }
+
+    deleteTask(event, index) {
+        const {tarefas} = this.state
+        const novasTarefas = [...tarefas]
+        novasTarefas.splice(index, 1)
+        
+        this.setState({
+            tarefas: [...novasTarefas]
         })
     }
 
@@ -48,13 +66,13 @@ class Main extends Component {
                 </form>
 
                 <ul className="tarefas">
-                    {tarefas.map(tarefa =>(
+                    {tarefas.map((tarefa, index) => (
                         <li key={tarefa}>
                             {tarefa}
-                        <span>
-                            <FaEdit className="edit"/>
-                            <FaWindowClose className="delete"/>
-                        </span>    
+                            <span>
+                                <FaEdit onClick={(event)=> this.editTask(event, index)} className="edit"/>
+                                <FaWindowClose onClick={(event)=> this.deleteTask(event, index)} className="delete"/>
+                            </span>
                         </li>
                     ))}
                 </ul>
