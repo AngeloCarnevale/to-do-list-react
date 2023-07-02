@@ -1,12 +1,8 @@
 // Componente principal
-import React, {Component} from "react";
+import React, {Component} from "react"
 import "./Main.css"
-
-// Form
-import { FaPlus } from 'react-icons/fa'
-
-// Tarefas
-import { FaEdit, FaWindowClose } from 'react-icons/fa'
+import Form from "./Form"
+import Tarefas from "./Tarefas"
 
 class Main extends Component {
     
@@ -14,6 +10,30 @@ class Main extends Component {
         novaTarefa: '',
         tarefas: [],
         index: -1
+    }
+
+    componentDidMount() {
+        const tarefas = JSON.parse(localStorage.getItem("tarefas"))
+
+        if (!tarefas) return
+
+        this.setState({tarefas})
+    }
+    // Função de componente que verifica sempre que houver atualização no valor do componente
+    componentDidUpdate(prevProps, prevState) {
+        const {tarefas} = this.state
+
+        if (tarefas === prevState ) return
+
+        else{
+            if (localStorage.getItem("tarefas") !== -1){
+                localStorage.setItem("tarefas", JSON.stringify(tarefas))
+            }
+            else {
+                let lista = localStorage.getItem(tarefas)
+                console.log(lista)
+            }
+        }
     }
 
     inputSubmit = (event) => {
@@ -42,7 +62,6 @@ class Main extends Component {
                 novaTarefa: '',
             })
         }
-        
     }
 
     inputMudou = (event) => {
@@ -60,16 +79,16 @@ class Main extends Component {
         })
     }
 
-    deleteTask(event, index) {
+    deleteTask = (event, index) => {
         const {tarefas} = this.state
         const novasTarefas = [...tarefas]
+
         novasTarefas.splice(index, 1)
         
         this.setState({
             tarefas: [...novasTarefas]
         })
     }
-
     render(){
         const {novaTarefa, tarefas} = this.state
         
@@ -77,24 +96,17 @@ class Main extends Component {
             <div className="main">
                 <h1>Lista de Tarefas</h1>
 
-                <form onSubmit={this.inputSubmit} action="#" className="form">
-                    <input onChange={this.inputMudou} type="text" value={novaTarefa}/>
-                    <button type="submit">
-                        <FaPlus/>
-                    </button>
-                </form>
+                <Form 
+                    inputSubmit={this.inputSubmit} 
+                    inputMudou={this.inputMudou} 
+                    novaTarefa={novaTarefa}
+                />
 
-                <ul className="tarefas">
-                    {tarefas.map((tarefa, index) => (
-                        <li key={tarefa}>
-                            {tarefa}
-                            <span>
-                                <FaEdit onClick={(event)=> this.editTask(event, index)} className="edit"/>
-                                <FaWindowClose onClick={(event)=> this.deleteTask(event, index)} className="delete"/>
-                            </span>
-                        </li>
-                    ))}
-                </ul>
+                <Tarefas 
+                    tarefas= {tarefas}
+                    editTask= {this.editTask}
+                    deleteTask= {this.deleteTask}
+                />
             </div>
         )
     }
